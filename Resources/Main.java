@@ -1,24 +1,58 @@
 public class Main {
     public static void main(String[] args) {
-        SolarSystem s = new SolarSystem(1000, 1000);
+        SolarSystem s = new SolarSystem(Config.windowWidth, Config.windowHeight);
 
         // The Sun
-        Star Sun = new Star(0, 0, 100, "YELLOW");
+        Star Sun = new Star(s, Config.sunSize, Config.sunColor );
+
+        Thread sunThread = new Thread(Sun);
+        sunThread.start();
 
         // Earth
-        Planet Earth = new Earth(200, 0, );
+        Planet Earth = new Planet(s, Sun, Config.earthDistance, Config.earthAngle, Config.earthSize, Config.earthVelocity, Config.earthColor );
 
+        Moon earthMoon = new Moon(s, Earth, Config.earthMoonDistance, Config.earthMoonAngle, Config.earthMoonSize, Config.earthMoonVelocity, Config.earthMoonColor );
 
+        Planet Mars = new Planet(s, Sun, Config.marsDistance, Config.marsAngle, Config.marsSize, Config.marsVelocity, Config.marsColor );
 
-        s.drawSolarObject(0, 0, 100, "YELLOW");
+        Planet[] Planets = {Earth, Mars};
+        Moon[] Moons = {earthMoon};
+        
+        Thread planetsThread = new Thread(){
+            public void run(){
+                while(true){
+                    for (Planet p: Planets){
+                        p.move();
+                    }
+                    s.finishedDrawing();
+                    try{
+                        Thread.sleep(10);
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        };
 
-        // Earth
-        s.drawSolarObject(this.distance, angle, size , color);
+        Thread moonsThread = new Thread(){
+            public void run(){
+                while(true){
+                    for (Moon m: Moons){
+                        m.move();
+                    }
+                    s.finishedDrawing();
+                    try{
+                        Thread.sleep(10);
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+        };
 
-        // Moon
-        s.drawSolarObjectAbout(50, 70, 5, "WHITE", 200, 0);
-
-        // Mars
-        s.drawSolarObject(400, 0, 30, "RED");
+        planetsThread.start();
+        moonsThread.start();
     }
 }

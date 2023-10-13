@@ -1,22 +1,25 @@
 public class Config {
-    private int sunSize = 100;
-    private String sunColor = "YELLOW";
+    static int windowWidth = 1000;
+    static int windowHeight = 1000;
 
-    private int earthDistance = sunSize + 100;
-    private int earthAngle = 0;
-    private int earthSize = 30;
-    private float earthVelocity = 29.78f;
-    private String earthColor = "BLUE";
+    static double sunSize = 100;
+    static String sunColor = "YELLOW";
 
-    private int earthMoonDistance = 30;
-    private int earthMoonAngle = 0;
-    private int earthMoonSize = 5;
-    private float earthMoonVelocity = 1.022f;
-    private String earthMoonColor = "WHITE";
+    static double earthDistance = sunSize + 100;
+    static double earthAngle = 0;
+    static double earthSize = 30;
+    static double earthVelocity = 29.78;
+    static String earthColor = "BLUE";
 
-    private int marsDistance = earthDistance + 100;
-    private int marsAngle = 0;
-    private int marsSize = 30;
-    private float marsVelocity = 24.08f;
-    private String marsColor = "RED";
+    static double earthMoonDistance = 30;
+    static double earthMoonAngle = 0;
+    static double earthMoonSize = 5;
+    static double earthMoonVelocity = 1.022;
+    static String earthMoonColor = "WHITE";
+
+    static double marsDistance = earthDistance + 100;
+    static double marsAngle = 0;
+    static double marsSize = 30;
+    static double marsVelocity = 24.08;
+    static String marsColor = "RED";
 }
