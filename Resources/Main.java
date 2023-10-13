@@ -25,12 +25,6 @@ public class Main {
                         p.move();
                     }
                     s.finishedDrawing();
-                    try{
-                        Thread.sleep(10);
-                    }
-                    catch (Exception e){
-                        System.out.println(e);
-                    }
                 }
             }
         };
@@ -42,12 +36,6 @@ public class Main {
                         m.move();
                     }
                     s.finishedDrawing();
-                    try{
-                        Thread.sleep(10);
-                    }
-                    catch (Exception e){
-                        System.out.println(e);
-                    }
                 }
             }
         };
