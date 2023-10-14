@@ -5,9 +5,12 @@ public class Main {
         // The Sun
         Star Sun = new Star(s, Config.sunSize, Config.sunColor );
 
-        Thread sunThread = new Thread(Sun);
-        sunThread.start();
+        // Mercury
+        Planet Mercury = new Planet(s, Sun, Config.mercuryDistance, Config.mercuryAngle, Config.mercurySize, Config.mercuryVelocity, Config.mercuryColor );
 
+        // Venus
+        Planet Venus = new Planet(s, Sun, Config.venusDistance, Config.venusAngle, Config.venusSize, Config.venusVelocity, Config.venusColor );
+    
         // Earth
         Planet Earth = new Planet(s, Sun, Config.earthDistance, Config.earthAngle, Config.earthSize, Config.earthVelocity, Config.earthColor );
 
@@ -15,32 +18,42 @@ public class Main {
 
         Planet Mars = new Planet(s, Sun, Config.marsDistance, Config.marsAngle, Config.marsSize, Config.marsVelocity, Config.marsColor );
 
-        Planet[] Planets = {Earth, Mars};
+        Planet Jupiter = new Planet(s, Sun, Config.jupiterDistance, Config.jupiterAngle, Config.jupiterSize, Config.jupiterVelocity, Config.jupiterColor );
+
+        Planet[] Planets = {Mercury, Venus, Earth, Mars, Jupiter};
         Moon[] Moons = {earthMoon};
-        
+
+        /*
+        Thread sunThread = new Thread(Sun);
+
         Thread planetsThread = new Thread(){
             public void run(){
-                while(true){
-                    for (Planet p: Planets){
-                        p.move();
-                    }
-                    s.finishedDrawing();
+                for (Planet p: Planets){
+                    p.move();
                 }
             }
         };
 
         Thread moonsThread = new Thread(){
             public void run(){
-                while(true){
-                    for (Moon m: Moons){
-                        m.move();
-                    }
-                    s.finishedDrawing();
+                for (Moon m: Moons){
+                    m.move();
                 }
             }
         };
+        */
 
-        planetsThread.start();
-        moonsThread.start();
+        while(true){
+            Sun.draw();
+            for (Planet p: Planets){
+                p.move();
+            }
+            for (Moon m: Moons){
+                m.move();
+            }
+            s.finishedDrawing();
+        }
+        
+        
     }
 }

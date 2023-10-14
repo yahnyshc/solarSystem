@@ -6,10 +6,11 @@ public class Star extends SpaceObject implements java.lang.Runnable {
     }
 
     public void run(){
-        while(true){
-            s.drawSolarObject(this.distance, this.angle, this.size, this.color);
-            s.finishedDrawing();
-        }
+        this.draw();
+    }
+
+    public void draw(){
+        s.drawSolarObject(this.distance, this.angle, this.size, this.color);
     }
 
 }
