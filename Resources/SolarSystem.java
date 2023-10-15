@@ -131,7 +131,7 @@ public class SolarSystem extends JFrame
 		double y = (int) (centreOfRotationY + distance * Math.cos(rads)) - diameter / 2;
 
 		synchronized (this)
-		{
+		{	
 			if (things.size() > 1000)
 			{
 				System.out.println("\n\n");
@@ -183,7 +183,7 @@ public class SolarSystem extends JFrame
 		double y = (int) (centreOfRotationY + distance * Math.cos(rads)) - diameter / 2;
 
 		synchronized (this)
-		{
+		{	
 			if (things.size() > 1000)
 			{
 				System.out.println("\n\n");
@@ -222,7 +222,7 @@ public class SolarSystem extends JFrame
 			this.repaint();
 			Thread.sleep(20);
 			synchronized (this)
-			{
+			{	
 				things.clear();
 			}
 		}
