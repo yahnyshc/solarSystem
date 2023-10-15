@@ -8,7 +8,7 @@ public class Planet extends SpaceObject{
         this.centrum = centrum;
     }
 
-    public void move(){
+    @Override public void update(){
         this.angle += (double)(this.velocity / Config.rotatingSpeed); 
         if (this.angle >= 360) { this.angle -= 360; }
         

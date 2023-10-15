@@ -1,4 +1,4 @@
-public class SpaceObject {
+public abstract class SpaceObject {
     protected SolarSystem s;
     protected double distance;
     protected double angle;
@@ -22,6 +22,8 @@ public class SpaceObject {
         this.color = col;
         this.velocity = velocity;
     }
+
+    public abstract void update();
 
     public SolarSystem getSolarSystem(){
         return this.s;

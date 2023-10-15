@@ -37,65 +37,37 @@ public class Main {
 
         Planet[] Planets = {Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune};
         Moon[] Moons = {earthMoon, ioMoon, europaMoon, ganymedeMoon, callistoMoon};
-        Moon[] asteroidsBeltOne = new Moon[800];
-        HashMap<Integer,Integer> asteroidsPos = new HashMap<Integer,Integer>();
+        Moon[] asteroidBelt = createBelt(s, Sun, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltDistance, Config.asteroidBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.asteroidBeltVelocityRange, Config.asteroidBeltSizeRange, Config.asteroidBeltColor);
+        Moon[] trojanBelt = createBelt(s, Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
+        Moon[] saturnBelt = createBelt(s, Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
 
-        double randomRange;
-        double randomAngle;
-        double randomVelocity;
-        double randomSize;
-        for ( int i = 0; i < 800; i++ ){
-            do{
-                randomRange = (double) ((Math.random() * (50 - (-10))) + (-10));
-                randomAngle = (double) ((Math.random() * (360 - 0)) + 0);
-                randomVelocity = (double) ((Math.random() * (15 - 10)) + 10);
-                randomSize = (double) ((Math.random() * (4 - 1)) + 1);
-            }
-            while ( asteroidsPos.containsKey((int)randomRange) && (int)asteroidsPos.get((int)randomRange) == (int)randomAngle);
-            asteroidsPos.put((int)randomRange, (int)randomAngle);
-
-            asteroidsBeltOne[i] = new Moon( s, Sun, Config.marsDistance + Config.marsSize/2 + 20 + randomRange, randomAngle, randomSize, randomVelocity, "WHITE" );
-        }   
-
-        Moon[] saturnBelt = new Moon[180];
-        asteroidsPos.clear();
-
-        for ( int i = 0; i < 180; i++ ){
-            do{
-                randomRange = (double) ((Math.random() * (6 - 0)) + 0);
-                randomAngle = (double) i * 2;
-                randomVelocity = (double) 80;
-            }
-            while ( asteroidsPos.containsKey((int)randomRange) && (int)asteroidsPos.get((int)randomRange) == (int)randomAngle);
-            asteroidsPos.put((int)randomRange, (int)randomAngle);
-
-            saturnBelt[i] = new Moon( s, Saturn, Config.saturnSize/2 + 2.5 + randomRange, randomAngle, 1, randomVelocity, "WHITE" );
-        }   
-
-        Thread sunThread, planetsThread, moonsThread, asteroidsBeltFirstThread, asteroidsBeltSecondThread, saturnRingThread;
+        Thread sunThread, planetsThread, moonsThread, saturnRingThread;
+        Thread [] asteroidBeltThreads = new Thread[Config.asteroidBeltThreadNumber];
+        Thread [] trojanBeltThreads = new Thread[Config.trojanBeltThreadNumber];
+        Thread [] saturnBeltThreads = new Thread[Config.saturnBeltThreadNumber];
         while (true){
-            sunThread = new Thread(){ public void run(){ Sun.draw(); } };
-            planetsThread = new Thread(){ public void run(){ for (Planet p: Planets){ p.move(); }}};
-            moonsThread = new Thread(){ public void run(){ for (Moon m: Moons){ m.move(); } } };
-            asteroidsBeltFirstThread = new Thread(){ public void run(){ for (int i = 0; i < 400; i++){ asteroidsBeltOne[i].move(); } } };
-            asteroidsBeltSecondThread = new Thread(){ public void run(){ for (int i = 400; i < 800; i++){ asteroidsBeltOne[i].move(); } } };
-            saturnRingThread = new Thread(){ public void run(){ for (Moon a: saturnBelt){ a.move(); } } };
+            sunThread = new Thread(){ public void run(){ Sun.update(); } };
+            planetsThread = new Thread(){ public void run(){ for (Planet p: Planets){ p.update(); }}};
+            moonsThread = new Thread(){ public void run(){ for (Moon m: Moons){ m.update(); } } };
+            asteroidBeltThreads = partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
+            trojanBeltThreads = partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
+            saturnBeltThreads = partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
 
             sunThread.start();
             planetsThread.start();
             moonsThread.start();
-            asteroidsBeltFirstThread.start();
-            asteroidsBeltSecondThread.start();
-            saturnRingThread.start();
+            for (int i = 0; i < Config.asteroidBeltThreadNumber; i++){ asteroidBeltThreads[i].start(); }
+            for (int i = 0; i < Config.trojanBeltThreadNumber; i++){ trojanBeltThreads[i].start(); }
+            for (int i = 0; i < Config.saturnBeltThreadNumber; i++){ saturnBeltThreads[i].start(); }
 
             //let all threads finish execution before finishing drawing
             try {
                 sunThread.join();
                 planetsThread.join();
                 moonsThread.join();
-                asteroidsBeltFirstThread.join();
-                asteroidsBeltSecondThread.join();
-                saturnRingThread.join();
+                for (int i = 0; i < Config.asteroidBeltThreadNumber; i++){ asteroidBeltThreads[i].join(); }
+                for (int i = 0; i < Config.trojanBeltThreadNumber; i++){ trojanBeltThreads[i].join(); }
+                for (int i = 0; i < Config.saturnBeltThreadNumber; i++){ saturnBeltThreads[i].join(); }
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -103,7 +75,47 @@ public class Main {
 
             s.finishedDrawing();
         }
-        
-        
     }
+
+    public static Moon[] createBelt(SolarSystem s, SpaceObject centrum, int asteroidNumber, double beltDistance, double[] distanceRange, double[][] angleRanges, double[] velocityRange, double[] sizeRange, String color){
+        Moon[] belt = new Moon[asteroidNumber];
+        HashMap<Integer,Integer> asteroidsPos = new HashMap<Integer,Integer>();
+
+        int angleRange;
+        double distance, angle, velocity, size;
+        for ( int i = 0; i < asteroidNumber; i++ ){
+            do{
+                distance = beltDistance + (double) ((Math.random() * (distanceRange[1] - distanceRange[0])) + distanceRange[0]);
+                // 360 degrees.
+                angleRange = (int) (Math.random() * (angleRanges.length)); 
+                angle = (double) ((Math.random() * ( angleRanges[angleRange][1] - angleRanges[angleRange][0] ) ) + angleRanges[angleRange][0]);
+                velocity = (double) ((Math.random() * (velocityRange[1] - velocityRange[0])) + velocityRange[0]);
+                size = (double) ((Math.random() * (sizeRange[1] - sizeRange[0])) + sizeRange[0]);
+            }
+            while ( asteroidsPos.containsKey((int)distance) && (int)asteroidsPos.get((int)distance) == (int)angle);
+            asteroidsPos.put((int)distance, (int)angle);
+
+            belt[i] = new Moon( s, centrum, distance, angle, size, velocity, color );
+        }   
+
+        return belt;
+    }
+
+    public static Thread[] partitionSpaceObjectsOnThreads(SpaceObject[] objects, int threadNumber, int objectNumberPerThread){
+        Thread [] objectsThreads = new Thread[threadNumber];
+        for (int i = 0; i < threadNumber; i++){
+            final int partition = i;
+            objectsThreads[i] = new Thread(){ 
+                public void run(){ 
+                    for (int j = partition*objectNumberPerThread; j < (partition+1)*objectNumberPerThread; j++){ 
+                        objects[j].update(); 
+                    } 
+                } 
+            };
+        }
+
+        return objectsThreads;
+    }
+
+
 }

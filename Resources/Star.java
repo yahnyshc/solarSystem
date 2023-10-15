@@ -4,7 +4,7 @@ public class Star extends SpaceObject {
         super( s, size, col );
     }
 
-    public void draw(){
+    @Override public void update(){
         s.drawSolarObject(this.distance, this.angle, this.size, this.color);
     }
 

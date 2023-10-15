@@ -70,7 +70,7 @@ public class Config {
     static double saturnAngle = 0;
     static double saturnSize = 28;
     static double saturnVelocity = 9.67;
-    static String saturnColor = "#BFBDAF";
+    static String saturnColor = "#EAD6B8";
 
     static double uranusDistance = sunSize/2 + 330;
     static double uranusAngle = 0;
@@ -84,5 +84,33 @@ public class Config {
     static double neptuneVelocity = 5.45;
     static String neptuneColor = "#4B70DD";
 
-    static double firstAsteroidsOrbitDistance = marsDistance + 20;
+    static int asteroidBeltAsteroidNumber = 500;
+    static int asteroidBeltAsteroidNumberPerThread = 250;
+    static int asteroidBeltThreadNumber = asteroidBeltAsteroidNumber/asteroidBeltAsteroidNumberPerThread; 
+    static double asteroidBeltDistance = marsDistance + marsSize/2;
+    static double[] asteroidBeltDistanceRange = {20, 40};
+    static double[][] asteroidBeltAngleRanges = { {0,360} };
+    static double[] asteroidBeltVelocityRange = {10, 15};
+    static double[] asteroidBeltSizeRange = {1, 4};
+    static String asteroidBeltColor = "WHITE";
+
+    static int trojanBeltAsteroidNumber = 200;
+    static int trojanBeltAsteroidNumberPerThread = 100;
+    static int trojanBeltThreadNumber = asteroidBeltAsteroidNumber/asteroidBeltAsteroidNumberPerThread; 
+    static double trojanBeltDistance = jupiterDistance;
+    static double[] trojanBeltDistanceRange = {20, 40};
+    static double[][] trojanBeltAngleRanges = { {50,100}, {250, 300} };
+    static double[] trojanBeltVelocityRange = {jupiterVelocity, jupiterVelocity};
+    static double[] trojanBeltSizeRange = {1, 4};
+    static String trojanBeltColor = "WHITE";
+
+    static int saturnBeltAsteroidNumber = 150;
+    static int saturnBeltAsteroidNumberPerThread = 75;
+    static int saturnBeltThreadNumber = saturnBeltAsteroidNumber/saturnBeltAsteroidNumberPerThread; 
+    static double saturnBeltDistance = saturnSize/2;
+    static double[] saturnBeltDistanceRange = {2.5, 8};
+    static double[][] saturnBeltAngleRanges = { {0,360} };
+    static double[] saturnBeltVelocityRange = {80,80};
+    static double[] saturnBeltSizeRange = {1, 2};
+    static String saturnBeltColor = "#DBB57C";
 }
