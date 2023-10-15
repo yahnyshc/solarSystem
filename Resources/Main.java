@@ -1,3 +1,6 @@
+// Importing utility classes 
+import java.util.*; 
+
 public class Main {
     public static void main(String[] args) {
         SolarSystem s = new SolarSystem(Config.windowWidth, Config.windowHeight);
@@ -34,96 +37,73 @@ public class Main {
 
         Planet[] Planets = {Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune};
         Moon[] Moons = {earthMoon, ioMoon, europaMoon, ganymedeMoon, callistoMoon};
-        Moon[] asteroidsBeltOne = new Moon[200];
- 
-        for ( int i = 0; i < 200; i++ ){
-            double randomRange = (double) ((Math.random() * (40 - (-2))) + (-5));
-            double randomAngle = (double) ((Math.random() * (360 - 0)) + 0);
-            double randomVelocity = (double) ((Math.random() * (15 - 10)) + 10);
-            double randomSize = (double) ((Math.random() * (4 - 1)) + 1);
+        Moon[] asteroidsBeltOne = new Moon[800];
+        HashMap<Integer,Integer> asteroidsPos = new HashMap<Integer,Integer>();
+
+        double randomRange;
+        double randomAngle;
+        double randomVelocity;
+        double randomSize;
+        for ( int i = 0; i < 800; i++ ){
+            do{
+                randomRange = (double) ((Math.random() * (50 - (-10))) + (-10));
+                randomAngle = (double) ((Math.random() * (360 - 0)) + 0);
+                randomVelocity = (double) ((Math.random() * (15 - 10)) + 10);
+                randomSize = (double) ((Math.random() * (4 - 1)) + 1);
+            }
+            while ( asteroidsPos.containsKey((int)randomRange) && (int)asteroidsPos.get((int)randomRange) == (int)randomAngle);
+            asteroidsPos.put((int)randomRange, (int)randomAngle);
 
             asteroidsBeltOne[i] = new Moon( s, Sun, Config.marsDistance + Config.marsSize/2 + 20 + randomRange, randomAngle, randomSize, randomVelocity, "WHITE" );
         }   
 
-        Moon[] saturnBelt = new Moon[60];
+        Moon[] saturnBelt = new Moon[180];
+        asteroidsPos.clear();
 
-        for ( int i = 0; i < 60; i++ ){
-            double randomRange = (double) ((Math.random() * (6 - 0)) + 0);
-            double randomAngle = (double) i * 6;
-            double randomVelocity = (double) 80;
+        for ( int i = 0; i < 180; i++ ){
+            do{
+                randomRange = (double) ((Math.random() * (6 - 0)) + 0);
+                randomAngle = (double) i * 2;
+                randomVelocity = (double) 80;
+            }
+            while ( asteroidsPos.containsKey((int)randomRange) && (int)asteroidsPos.get((int)randomRange) == (int)randomAngle);
+            asteroidsPos.put((int)randomRange, (int)randomAngle);
 
             saturnBelt[i] = new Moon( s, Saturn, Config.saturnSize/2 + 2.5 + randomRange, randomAngle, 1, randomVelocity, "WHITE" );
         }   
 
-        Thread cleanerThread = new Thread(){
-            public void run(){
-                while(true){
-                    s.finishedDrawing();
-                    try{ Thread.sleep(18); } catch (Exception e) {} 
-                }
+        Thread sunThread, planetsThread, moonsThread, asteroidsBeltFirstThread, asteroidsBeltSecondThread, saturnRingThread;
+        while (true){
+            sunThread = new Thread(){ public void run(){ Sun.draw(); } };
+            planetsThread = new Thread(){ public void run(){ for (Planet p: Planets){ p.move(); }}};
+            moonsThread = new Thread(){ public void run(){ for (Moon m: Moons){ m.move(); } } };
+            asteroidsBeltFirstThread = new Thread(){ public void run(){ for (int i = 0; i < 400; i++){ asteroidsBeltOne[i].move(); } } };
+            asteroidsBeltSecondThread = new Thread(){ public void run(){ for (int i = 400; i < 800; i++){ asteroidsBeltOne[i].move(); } } };
+            saturnRingThread = new Thread(){ public void run(){ for (Moon a: saturnBelt){ a.move(); } } };
+
+            sunThread.start();
+            planetsThread.start();
+            moonsThread.start();
+            asteroidsBeltFirstThread.start();
+            asteroidsBeltSecondThread.start();
+            saturnRingThread.start();
+
+            //let all threads finish execution before finishing drawing
+            try {
+                sunThread.join();
+                planetsThread.join();
+                moonsThread.join();
+                asteroidsBeltFirstThread.join();
+                asteroidsBeltSecondThread.join();
+                saturnRingThread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-        };
+
+            s.finishedDrawing();
+        }
         
-        Thread sunThread = new Thread(){
-            public void run(){
-                while(true){
-                    Sun.draw();
-                    try{ Thread.sleep(6); } catch (Exception e) {} 
-                }
-            }
-        };
-
-        Thread planetsThread = new Thread(){
-            public void run(){
-                while(true){
-                    for (Planet p: Planets){
-                        p.move();
-                    }
-                    try{ Thread.sleep(6); } catch (Exception e) {} 
-                }
-            }
-        };
-
-        Thread moonsThread = new Thread(){
-            public void run(){
-                while(true){
-                    for (Moon m: Moons){
-                        m.move();
-                    }
-                    try{ Thread.sleep(6); } catch (Exception e) {} 
-                }
-            }
-        };
-
-        Thread asteroidsBeltOneThread = new Thread(){
-            public void run(){
-                while(true){
-                    for (Moon a: asteroidsBeltOne){
-                        a.move();
-                    }
-                    try{ Thread.sleep(17); } catch (Exception e) {} 
-                }
-            }
-        };
-
-        Thread saturnRingThread = new Thread(){
-            public void run(){
-                while(true){
-                    for (Moon a: saturnBelt){
-                        a.move();
-                    }
-                    try{ Thread.sleep(14); } catch (Exception e) {} 
-                }
-            }
-        };
-        
-        
-        cleanerThread.start();
-        sunThread.start();
-        planetsThread.start();
-        moonsThread.start();
-        asteroidsBeltOneThread.start();
-        saturnRingThread.start();
         
     }
 }

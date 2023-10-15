@@ -1,7 +1,7 @@
 public class Config {
     static int windowWidth = 1200;
     static int windowHeight = 1200;
-    static double rotatingSpeed = 150.0;
+    static double rotatingSpeed = 30.0;
 
     static double sunSize = 110;
     static String sunColor = "#FDB813";
