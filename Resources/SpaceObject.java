@@ -1,11 +1,20 @@
-public abstract class SpaceObject {
+/** 
+ * This class represents abstract Space object. It implements Runnable so it can be used as a Thread parameter.
+ * @author Maksym Yahnyshchak
+ */
+public abstract class SpaceObject implements Runnable {
     protected SolarSystem s;
     protected double distance;
     protected double angle;
     protected double size;
-    protected double velocity;
     protected String color;
 
+    /**
+     * Constructor of space object. Used for objects that do not orbit around others(e.g Sun)
+     * @param s SolarSystem object
+     * @param size Diameter of the object
+     * @param col Color of the object. Can be string e.g "WHITE" or RGB "#463FBD"
+     */
     public SpaceObject(SolarSystem s, double size, String col ){
         this.s = s;
         this.distance = 0.0;
@@ -14,16 +23,33 @@ public abstract class SpaceObject {
         this.color = col;
     }
 
-    public SpaceObject(SolarSystem s, double distance, double angle, double size, double velocity, String col ){
+    /**
+     * Constructor of space object.
+     * @param s SolarSystem object
+     * @param distance Distance from centrum to the planet.
+     * @param angle Starting angle of planet on orbit
+     * @param size Diameter of the object
+     * @param velocity Velocity of its movement around orbit.
+     * @param col Color of the object. Can be string e.g "WHITE" or RGB "#463FBD"
+     */
+    public SpaceObject(SolarSystem s, double distance, double angle, double size, String col ){
         this.s = s;
         this.distance = distance;
         this.angle = angle;
         this.size = size;
         this.color = col;
-        this.velocity = velocity;
     }
 
+    /**
+     * Function that should be implemented by child classes to update image and postion of object.
+     */
     public abstract void update();
+
+    /**
+     * Runnable implementation.
+     */
+    public void run(){ this.update(); }
+    
 
     public SolarSystem getSolarSystem(){
         return this.s;
@@ -55,14 +81,6 @@ public abstract class SpaceObject {
 
     public void setSize(double size) {
         this.size = size;
-    }
-
-    public double getVelocity() {
-        return this.velocity;
-    }
-
-    public void setVelocity(double velocity) {
-        this.velocity = velocity;
     }
 
     public String getColor() {

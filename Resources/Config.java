@@ -1,9 +1,16 @@
+/**
+ * This class contains parameters of solar system.
+ * @author Maksym Yahnyshchak
+ */
 public class Config {
     static int windowWidth = 1100;
     static int windowHeight = 1100;
     
+    // Coeficient of objects rotation speed.
     static double rotatingSpeed = 30.0;
+    // Coeficient of objects size.
     static double sizeCoef = 0.75;
+    // Distance between planets orbits
     static double planetsDistance = 45 * sizeCoef;
     
     static double sunSize = 90 * sizeCoef;
