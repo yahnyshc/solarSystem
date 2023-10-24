@@ -50,7 +50,9 @@ public class Main {
         Moon[] trojanBelt = createBelt(s, Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
         Moon[] saturnBelt = createBelt(s, Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
 
-        Thread sunThread, planetsThread, moonsThread;
+        Commet commet = new Commet(s, Config.commetCentrumX, Config.commetCentrumY, Config.commetOrbitAngle, Config.commetOrbitA, Config.commetOrbitB, Config.commetStartAngle, Config.commetSize, Config.commetVelocity, Config.commetColor);
+
+        Thread sunThread, planetsThread, moonsThread, commetThread;
         Thread [] asteroidBeltThreads, trojanBeltThreads, saturnBeltThreads;
         while (true){
             // Create runnable threads
@@ -60,11 +62,13 @@ public class Main {
             asteroidBeltThreads = partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
             trojanBeltThreads = partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
             saturnBeltThreads = partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
+            commetThread = new Thread(commet);
 
             // Start all of the threads
             sunThread.start();
             planetsThread.start();
             moonsThread.start();
+            commetThread.start();
             for (int i = 0; i < Config.asteroidBeltThreadNumber; i++){ asteroidBeltThreads[i].start(); }
             for (int i = 0; i < Config.trojanBeltThreadNumber; i++){ trojanBeltThreads[i].start(); }
             for (int i = 0; i < Config.saturnBeltThreadNumber; i++){ saturnBeltThreads[i].start(); }
@@ -74,6 +78,7 @@ public class Main {
                 sunThread.join();
                 planetsThread.join();
                 moonsThread.join();
+                commetThread.join();
                 for (int i = 0; i < Config.asteroidBeltThreadNumber; i++){ asteroidBeltThreads[i].join(); }
                 for (int i = 0; i < Config.trojanBeltThreadNumber; i++){ trojanBeltThreads[i].join(); }
                 for (int i = 0; i < Config.saturnBeltThreadNumber; i++){ saturnBeltThreads[i].join(); }

@@ -14,6 +14,10 @@ public class Star extends SpaceObject {
         super( s, size, col );
     }
 
+    public Star(SolarSystem s, double distance, double angle, double size, String col){
+        super( s, distance, angle, size, col );
+    }
+
     /**
      * Updates image of the star.
      */

@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Config"},{"p":"<Unnamed>","l":"Main"},{"p":"<Unnamed>","l":"Moon"},{"p":"<Unnamed>","l":"Planet"},{"p":"<Unnamed>","l":"SolarSystem"},{"p":"<Unnamed>","l":"SpaceObject"},{"p":"<Unnamed>","l":"Star"}];updateSearchResults();

@@ -26,9 +26,8 @@ public class Planet extends SpaceObject{
      * Updates position of the object according to velocity.
      */
     @Override public void update(){
-        this.angle += (double)(this.velocity / Config.rotatingSpeed); 
-        if (this.angle >= 360) { this.angle -= 360; }
-        
+        this.angle = (this.angle + (double)(this.velocity / Config.rotatingSpeed)) % 360; 
+
         s.drawSolarObjectAbout(this.distance, this.angle, this.size, this.color, centrum.getDistance(), centrum.getAngle());
     }
 

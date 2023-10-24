@@ -14,7 +14,7 @@ public class Moon extends Planet {
      * @param velocity Velocity of its movement around orbit.
      * @param col Color of this moon. Can be string e.g "WHITE" or RGB "#463FBD"
      */
-    public Moon(SolarSystem s, SpaceObject centrum, double distance, double angle, double size, double velocity, String col ) {
+    public Moon( SolarSystem s, SpaceObject centrum, double distance, double angle, double size, double velocity, String col ) {
         super(s, centrum, distance, angle, size, velocity, col );
     }
     
