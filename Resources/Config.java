@@ -9,9 +9,9 @@ public class Config {
     // Coeficient of objects rotation speed.
     static double rotatingSpeed = 30.0;
     // Coeficient of objects size.
-    static double sizeCoef = 0.75;
+    static double sizeCoef = 0.65;
     // Distance between planets orbits
-    static double planetsDistance = 45 * sizeCoef;
+    static double planetsDistance = 40 * sizeCoef;
     
     static double sunSize = 90 * sizeCoef;
     static String sunColor = "#FDB813";

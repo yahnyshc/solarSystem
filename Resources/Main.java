@@ -1,6 +1,3 @@
-// Importing utility classes 
-import java.util.*; 
-
 /**
  * This class creates and manitpulates space objects in such way that solar system is modeled.
  * @author Maksym Yahnyshchak
@@ -14,6 +11,9 @@ public class Main {
     public static void main(String[] args) {
         SolarSystem s = new SolarSystem(Config.windowWidth, Config.windowHeight);
 
+        // add acceleration to solar system. 'f' to accelerate and 's' to slow down
+        SolarSystemHelper.addAccelerationListener(s);
+        
         // The Sun
         Star Sun = new Star(s, Config.sunSize, Config.sunColor );
 
@@ -46,11 +46,12 @@ public class Main {
 
         Planet[] Planets = {Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune};
         Moon[] Moons = {earthMoon, ioMoon, europaMoon, ganymedeMoon, callistoMoon};
-        Moon[] asteroidBelt = createBelt(s, Sun, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltDistance, Config.asteroidBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.asteroidBeltVelocityRange, Config.asteroidBeltSizeRange, Config.asteroidBeltColor);
-        Moon[] trojanBelt = createBelt(s, Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
-        Moon[] saturnBelt = createBelt(s, Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
+        Moon[] asteroidBelt = SolarSystemHelper.createBelt(s, Sun, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltDistance, Config.asteroidBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.asteroidBeltVelocityRange, Config.asteroidBeltSizeRange, Config.asteroidBeltColor);
+        Moon[] trojanBelt = SolarSystemHelper.createBelt(s, Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
+        Moon[] saturnBelt = SolarSystemHelper.createBelt(s, Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
 
-        Commet commet = new Commet(s, Config.commetCentrumX, Config.commetCentrumY, Config.commetOrbitAngle, Config.commetOrbitA, Config.commetOrbitB, Config.commetStartAngle, Config.commetSize, Config.commetVelocity, Config.commetColor);
+        // commet that will have eliptic orbit
+        Comet commet = new Comet(s, Config.commetCentrumX, Config.commetCentrumY, Config.commetOrbitAngle, Config.commetOrbitA, Config.commetOrbitB, Config.commetStartAngle, Config.commetSize, Config.commetVelocity, Config.commetColor);
 
         Thread sunThread, planetsThread, moonsThread, commetThread;
         Thread [] asteroidBeltThreads, trojanBeltThreads, saturnBeltThreads;
@@ -59,9 +60,9 @@ public class Main {
             sunThread = new Thread(Sun);
             planetsThread = new Thread(){ public void run(){ for (Planet p: Planets){ p.update(); }}};
             moonsThread = new Thread(){ public void run(){ for (Moon m: Moons){ m.update(); } } };
-            asteroidBeltThreads = partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
-            trojanBeltThreads = partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
-            saturnBeltThreads = partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
+            asteroidBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
+            trojanBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
+            saturnBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
             commetThread = new Thread(commet);
 
             // Start all of the threads
@@ -90,68 +91,4 @@ public class Main {
             s.finishedDrawing();
         }
     }
-
-    /**
-     * Create asteroids belt around the centrum space object.
-     * @param s SolarSystem object
-     * @param centrum Object we create belt around
-     * @param asteroidNumber Number of moons/asteroids in the belt
-     * @param beltDistance Average distance from centrum object to belt
-     * @param distanceRange Array to represent limits of asteroids range of distance.
-     * @param angleRanges  Array to represent limits of asteroids range of angle.
-     * @param velocityRange Array to represent limits of asteroids range of velocity.
-     * @param sizeRange Array to represent limits of asteroids range of size.
-     * @param color color of the moons/asteroids
-     * @return Array of Moon objects that represents belt.
-     */
-    public static Moon[] createBelt(SolarSystem s, SpaceObject centrum, int asteroidNumber, double beltDistance, double[] distanceRange, double[][] angleRanges, double[] velocityRange, double[] sizeRange, String color){
-        Moon[] belt = new Moon[asteroidNumber];
-        // hashmap to save generated asteroids position to avoid duplicate positions
-        HashMap<Integer,Integer> asteroidsPos = new HashMap<Integer,Integer>();
-
-        int angleRange;
-        double distance, angle, velocity, size;
-        // Generating random asteroids/moons
-        for ( int i = 0; i < asteroidNumber; i++ ){
-            do{
-                distance = beltDistance + (double) ((Math.random() * (distanceRange[1] - distanceRange[0])) + distanceRange[0]);
-                // 360 degrees.
-                angleRange = (int) (Math.random() * (angleRanges.length)); 
-                angle = (double) ((Math.random() * ( angleRanges[angleRange][1] - angleRanges[angleRange][0] ) ) + angleRanges[angleRange][0]);
-                velocity = (double) ((Math.random() * (velocityRange[1] - velocityRange[0])) + velocityRange[0]);
-                size = (double) ((Math.random() * (sizeRange[1] - sizeRange[0])) + sizeRange[0]);
-            }
-            while ( asteroidsPos.containsKey((int)distance) && (int)asteroidsPos.get((int)distance) == (int)angle);
-            asteroidsPos.put((int)distance, (int)angle);
-
-            belt[i] = new Moon( s, centrum, distance, angle, size, velocity, color );
-        }   
-
-        return belt;
-    }
-
-    /**
-     * Partition array of space objects between different threads. 
-     * @param objects array of objects to partition
-     * @param threadNumber number of threads to partition on
-     * @param objectNumberPerThread number of objects per each thread
-     * @return array of runnable threads
-     */
-    public static Thread[] partitionSpaceObjectsOnThreads(SpaceObject[] objects, int threadNumber, int objectNumberPerThread){
-        Thread [] objectsThreads = new Thread[threadNumber];
-        for (int i = 0; i < threadNumber; i++){
-            final int partition = i;
-            objectsThreads[i] = new Thread(){ 
-                public void run(){ 
-                    for (int j = partition*objectNumberPerThread; j < (partition+1)*objectNumberPerThread; j++){ 
-                        objects[j].update(); 
-                    } 
-                } 
-            };
-        }
-
-        return objectsThreads;
-    }
-
-
 }

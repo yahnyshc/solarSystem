@@ -1,4 +1,4 @@
-public class Commet extends SpaceObject{
+public class Comet extends SpaceObject{
     private double centrumDistance;
     private double centrumAngle;
     private double velocity;
@@ -6,7 +6,7 @@ public class Commet extends SpaceObject{
     private double orbitA;
     private double orbitB;
 
-    public Commet( SolarSystem s, double centrumX, double centrumY, double orbitAngle, double orbitA, double orbitB, double angle, double size, double velocity, String col ){
+    public Comet( SolarSystem s, double centrumX, double centrumY, double orbitAngle, double orbitA, double orbitB, double angle, double size, double velocity, String col ){
         super(s, size, col );
         this.velocity = velocity;
         this.orbitAngle = orbitAngle;
