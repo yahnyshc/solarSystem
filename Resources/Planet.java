@@ -3,7 +3,9 @@
  * @author Maksym Yahnyshchak
  */
 public class Planet extends SpaceObject{
+    // object around which the planet has orbit
     protected SpaceObject centrum;
+    // velocity of the planet
     protected double velocity;
     
     /**
@@ -30,21 +32,4 @@ public class Planet extends SpaceObject{
 
         s.drawSolarObjectAbout(this.distance, this.angle, this.size, this.color, centrum.getDistance(), centrum.getAngle());
     }
-
-    public SpaceObject getCentrum() {
-        return this.centrum;
-    }
-
-    public void setCentrum(SpaceObject centrum) {
-        this.centrum = centrum;
-    }
-
-    public double getVelocity() {
-        return this.velocity;
-    }
-
-    public void setVelocity(double velocity) {
-        this.velocity = velocity;
-    }
-    
 }

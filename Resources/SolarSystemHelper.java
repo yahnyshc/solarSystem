@@ -3,12 +3,22 @@ import java.awt.event.*;
 
 /**
  * Class implementing functions to help in solar system features creation/optimization
+ * @author Maksym Yahnyshchak
  */
 public class SolarSystemHelper {
+    // solar system object
+    SolarSystem s;
+
+    /**
+     * Constructor of the solar system helper
+     * @param s
+     */
+    SolarSystemHelper(SolarSystem s){
+        this.s = s;
+    }
     
     /**
      * Create asteroids belt around the centrum space object.
-     * @param s SolarSystem object
      * @param centrum Object we create belt around
      * @param asteroidNumber Number of moons/asteroids in the belt
      * @param beltDistance Average distance from centrum object to belt
@@ -19,7 +29,7 @@ public class SolarSystemHelper {
      * @param color color of the moons/asteroids
      * @return Array of Moon objects that represents belt.
      */
-    public static Moon[] createBelt(SolarSystem s, SpaceObject centrum, int asteroidNumber, double beltDistance, double[] distanceRange, double[][] angleRanges, double[] velocityRange, double[] sizeRange, String color){
+    public Moon[] createBelt( SpaceObject centrum, int asteroidNumber, double beltDistance, double[] distanceRange, double[][] angleRanges, double[] velocityRange, double[] sizeRange, String color){
         Moon[] belt = new Moon[asteroidNumber];
         // hashmap to save generated asteroids position to avoid duplicate positions
         HashMap<Integer,Integer> asteroidsPos = new HashMap<Integer,Integer>();
@@ -39,7 +49,7 @@ public class SolarSystemHelper {
             while ( asteroidsPos.containsKey((int)distance) && (int)asteroidsPos.get((int)distance) == (int)angle);
             asteroidsPos.put((int)distance, (int)angle);
 
-            belt[i] = new Moon( s, centrum, distance, angle, size, velocity, color );
+            belt[i] = new Moon( this.s, centrum, distance, angle, size, velocity, color );
         }   
 
         return belt;
@@ -52,7 +62,7 @@ public class SolarSystemHelper {
      * @param objectNumberPerThread number of objects per each thread
      * @return array of runnable threads
      */
-    public static Thread[] partitionSpaceObjectsOnThreads(SpaceObject[] objects, int threadNumber, int objectNumberPerThread){
+    public Thread[] partitionSpaceObjectsOnThreads(SpaceObject[] objects, int threadNumber, int objectNumberPerThread){
         Thread [] objectsThreads = new Thread[threadNumber];
         for (int i = 0; i < threadNumber; i++){
             final int partition = i;
@@ -72,10 +82,9 @@ public class SolarSystemHelper {
     /**
      * add action listener to solar system to be able to accelerate and slow down the planets.
      * 'f' to accelerate and 's' to slow down.
-     * @param s solar system object
      */
-    public static void addAccelerationListener(SolarSystem s){
-        s.addKeyListener(new KeyListener() {
+    public void addAccelerationListener(){
+        this.s.addKeyListener(new KeyListener() {
             public void keyPressed (KeyEvent e) {    
                 if (Character.toLowerCase(e.getKeyChar()) == 'f' && Config.rotatingSpeed - 0.3 > 0){
                     Config.rotatingSpeed -= 0.3;

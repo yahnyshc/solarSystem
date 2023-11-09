@@ -10,9 +10,10 @@ public class Main {
      */
     public static void main(String[] args) {
         SolarSystem s = new SolarSystem(Config.windowWidth, Config.windowHeight);
+        SolarSystemHelper helper = new SolarSystemHelper(s);
 
         // add acceleration to solar system. 'f' to accelerate and 's' to slow down
-        SolarSystemHelper.addAccelerationListener(s);
+        helper.addAccelerationListener();
         
         // The Sun
         Star Sun = new Star(s, Config.sunSize, Config.sunColor );
@@ -46,9 +47,9 @@ public class Main {
 
         Planet[] Planets = {Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune};
         Moon[] Moons = {earthMoon, ioMoon, europaMoon, ganymedeMoon, callistoMoon};
-        Moon[] asteroidBelt = SolarSystemHelper.createBelt(s, Sun, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltDistance, Config.asteroidBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.asteroidBeltVelocityRange, Config.asteroidBeltSizeRange, Config.asteroidBeltColor);
-        Moon[] trojanBelt = SolarSystemHelper.createBelt(s, Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
-        Moon[] saturnBelt = SolarSystemHelper.createBelt(s, Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
+        Moon[] asteroidBelt = helper.createBelt( Sun, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltDistance, Config.asteroidBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.asteroidBeltVelocityRange, Config.asteroidBeltSizeRange, Config.asteroidBeltColor);
+        Moon[] trojanBelt = helper.createBelt( Sun, Config.trojanBeltAsteroidNumber, Config.trojanBeltDistance, Config.trojanBeltDistanceRange, Config.trojanBeltAngleRanges, Config.trojanBeltVelocityRange, Config.trojanBeltSizeRange, Config.trojanBeltColor);
+        Moon[] saturnBelt = helper.createBelt( Saturn, Config.saturnBeltAsteroidNumber, Config.saturnBeltDistance, Config.saturnBeltDistanceRange, Config.asteroidBeltAngleRanges, Config.saturnBeltVelocityRange, Config.saturnBeltSizeRange, Config.saturnBeltColor);
 
         // commet that will have eliptic orbit
         Comet commet = new Comet(s, Config.commetCentrumX, Config.commetCentrumY, Config.commetOrbitAngle, Config.commetOrbitA, Config.commetOrbitB, Config.commetStartAngle, Config.commetSize, Config.commetVelocity, Config.commetColor);
@@ -60,9 +61,9 @@ public class Main {
             sunThread = new Thread(Sun);
             planetsThread = new Thread(){ public void run(){ for (Planet p: Planets){ p.update(); }}};
             moonsThread = new Thread(){ public void run(){ for (Moon m: Moons){ m.update(); } } };
-            asteroidBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
-            trojanBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
-            saturnBeltThreads = SolarSystemHelper.partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
+            asteroidBeltThreads = helper.partitionSpaceObjectsOnThreads(asteroidBelt, Config.asteroidBeltAsteroidNumber, Config.asteroidBeltAsteroidNumberPerThread);
+            trojanBeltThreads = helper.partitionSpaceObjectsOnThreads(trojanBelt, Config.trojanBeltAsteroidNumber, Config.trojanBeltAsteroidNumberPerThread);
+            saturnBeltThreads = helper.partitionSpaceObjectsOnThreads(saturnBelt, Config.saturnBeltAsteroidNumber, Config.saturnBeltAsteroidNumberPerThread);
             commetThread = new Thread(commet);
 
             // Start all of the threads

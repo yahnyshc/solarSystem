@@ -3,10 +3,15 @@
  * @author Maksym Yahnyshchak
  */
 public abstract class SpaceObject implements Runnable {
+    // solar system object
     protected SolarSystem s;
+    // distance from the sun
     protected double distance;
+    // angle on the orbit
     protected double angle;
+    // size of the space object
     protected double size;
+    // color of the object
     protected String color;
 
     /**
@@ -29,7 +34,6 @@ public abstract class SpaceObject implements Runnable {
      * @param distance Distance from centrum to the planet.
      * @param angle Starting angle of planet on orbit
      * @param size Diameter of the object
-     * @param velocity Velocity of its movement around orbit.
      * @param col Color of the object. Can be string e.g "WHITE" or RGB "#463FBD"
      */
     public SpaceObject(SolarSystem s, double distance, double angle, double size, String col ){
@@ -50,45 +54,19 @@ public abstract class SpaceObject implements Runnable {
      */
     public void run(){ this.update(); }
     
-
-    public SolarSystem getSolarSystem(){
-        return this.s;
-    }
-
-    public void setSolarSystem(SolarSystem s){
-        this.s = s;
-    }
-
+    /**
+     * Distance getter
+     * @return distance from the sun
+     */
     public double getDistance() {
         return this.distance;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
+    /**
+     * Angle getter
+     * @return angle on the orbit around sun
+     */
     public double getAngle() {
         return this.angle;
     }
-
-    public void setAngle(double angle) {
-        this.angle = angle;
-    }
-
-    public double getSize() {
-        return this.size;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
-    }
-
-    public String getColor() {
-        return this.color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
 }
