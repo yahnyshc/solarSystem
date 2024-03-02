@@ -1,8 +1,11 @@
 # solarSystem
 
 Implementation of solar system simulation.
+
 Compile and run Main to see the simulation:
+
 javac Main.java
+
 java Main
 
 
