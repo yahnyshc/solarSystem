@@ -1,12 +1,16 @@
 # solarSystem
-Lancaster coursework
 
 Implementation of solar system simulation.
-Compile and run Main to see the simulation.
-Supports acceleration using 'f' and slow down using 's' keybord buttons.
+Compile and run Main to see the simulation:
+javac Main.java
+java Main
 
-Multithreading used to optimize the program.
 
-Work is based on using exisiting written by Joe Finney class SolarSystem.
+Supports acceleration using 'f' and slowing down using 's' keyboard buttons.
 
+Multithreading is used to optimize the program.
+
+Planets' rotation variables are similar to the real-world solar system.
+
+![image](https://github.com/yahnyshc/solarSystem/assets/143096926/fb01ffb9-a259-477a-9ae4-36e484e744c9)
 
